@@ -1,22 +1,45 @@
-from decision import *
-import matplotlib.pyplot as plt
-from example_code_helper import *
+"""
+Suppose we are given 2 machines with payouts following N(0, 1), and N(1, 2)
+respectively and we play 50 rounds in total.
+
+Here, a strategy which explores during the first p proportion of the rounds
+and exploits in the remaining rounds is implemented.
+"""
+
+
 import numpy as np
+from infrastructure import *
 
 
-bernoulli_machines = [bernoulli_machine(0.4)] + [bernoulli_machine(0.6)]
-n = 500
-proportions = np.linspace(0.1, 1, 10, False)
-outcomes = [[] for i in range(len(proportions))]
-
-for i in range(n):
-    for index, p in enumerate(proportions):
-        outcomes[index].append(simulate(explore_exploit_wrapper(p), 100, 'outcome', *bernoulli_machines))
+# set up machines
+machines = [normal_machine(i, j**0.5) for i, j in [[0, 1], [1, 2]]]
 
 
-def mean(l):
-    return sum(l)/len(l)
+# overwrite __init__ so p can be stored, since the
+# strategy now depends on p
+class ExploreExploit(Game):
+    def __init__(self, p, turns, *machines):
+        super().__init__(turns, *machines)
+        self.p = p
 
-mean_outcomes = list(map(mean, outcomes))
-for proportion, outcome in zip(proportions, mean_outcomes):
-    print(f'Mean outcome for proportion {proportion} is {outcome}')
+    def decide(self):
+        while self.next_turn <= self.turns * self.p:
+            return self.next_turn % self.machine_count
+        index_max = max(range(len(self.means)), key=self.means.__getitem__)
+        return index_max
+
+
+p, turns, times = 0.5, 50, 1000
+# simulate once
+g = ExploreExploit(p, turns, *machines)
+print(f"The output of simulating the scenario once is {g.simulate()}.")
+
+
+def simulate_n_times(n, p, obj, turns, *machines):
+    return [obj(p, turns, *machines).simulate() for i in range(n)]
+
+
+# simulate 1000 times
+output = simulate_n_times(times, 0.5, ExploreExploit, 50, *machines)
+mean = sum(output) / times
+print(f"The mean outcome of simulating the scenario {times} times is {mean}.")
