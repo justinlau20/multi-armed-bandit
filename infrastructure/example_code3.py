@@ -27,14 +27,14 @@ machines = [bernoulli_machine(i) for i in [0.2, 0.4, 0.6]]
 
 
 # create a class representing the scenario
-class BernoilliScenario(Game):
+class BernoulliScenario(Game):
     def __init__(self):
         super().__init__(turns, *machines)
 
 
 # modify init, _update to store variance
 # also overwrite decide
-class HighestVariance(BernoilliScenario):
+class HighestVariance(BernoulliScenario):
     def __init__(self):
         super().__init__()
         self.vars = [0] * self.machine_count
@@ -46,12 +46,12 @@ class HighestVariance(BernoilliScenario):
     def decide(self):
         while self.next_turn <= self.turns * 0.5:
             return self.next_turn % self.machine_count
-        index_max = max(range(len(self.vars)), key=self.vars.__getitem__)
+        index_max = np.argmax(self.vars)
         # print(index_max, self.vars)
         return index_max
 
 
-class LowestVariance(BernoilliScenario):
+class LowestVariance(BernoulliScenario):
     def __init__(self):
         super().__init__()
         self.vars = [0] * self.machine_count

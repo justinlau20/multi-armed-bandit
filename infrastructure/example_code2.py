@@ -25,7 +25,7 @@ class ExploreExploit(Game):
     def decide(self):
         while self.next_turn <= self.turns * self.p:
             return self.next_turn % self.machine_count
-        index_max = max(range(len(self.means)), key=self.means.__getitem__)
+        index_max = np.argmax(self.means)
         return index_max
 
 
