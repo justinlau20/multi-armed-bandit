@@ -21,7 +21,8 @@ class AlwaysPickFirst(Game):
 
 # simulate once
 g = AlwaysPickFirst(100, *machines)
-print(f"The output of simulating the scenario once is {g.simulate()}.")
+print(f"The wealth and regret of simulating the scenario once is"
+      f" {g.simulate('all')}.")
 
 
 def simulate_n_times(n, obj, turns, *machines):

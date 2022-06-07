@@ -1,3 +1,4 @@
+from platform import machine
 import numpy as np
 from random import choices, randint, random
 
@@ -71,6 +72,11 @@ class Game:
         self.machines = machines
         self.means = [0]*self.machine_count
         self.wealth = 0
+        if all([m.mean is not None for m in machines]):
+            self.regret = 0
+            self.best_machine_mean = max([m.mean for m in machines])
+        else:
+            self.regret = None
 
     def _update(self, index, outcome):
         """
@@ -82,6 +88,8 @@ class Game:
         l = len(self.history[index])
         self.means[index] = (self.means[index] * (l-1) + outcome)/l
         self.wealth += outcome
+        if self.regret is not None:
+            self.regret += self.best_machine_mean - self.machines[index].mean
 
     def _step(self):
         """
@@ -104,11 +112,26 @@ class Game:
         """
         Runs the simulation once. Returns the wealth at the end
         of the game by default. Can also return self for debugging/ other uses.
+
+        Parameters:
+        -----------
+        output:
+            'outcome' (default); returns final wealth
+            'regret'; returns final regret
+            'all'; returns all relevant attributes as a tuple
+            'obj'; returns the final Game object
         """
         while self.next_turn <= self.turns:
             self._step()
         if output == 'outcome':
             return self.wealth
+
+        if output == "regret":
+            return self.regret
+
+        if output == "all":
+            return self.wealth, self.regret
+
         if output == 'obj':
             return self
         raise Exception("Incorrect input type.")
