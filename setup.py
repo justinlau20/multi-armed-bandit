@@ -1,6 +1,6 @@
-from setuptools import setup,find_packages
+from setuptools import setup, find_packages
 setup(
     name="bandit",
-    version="0.1",
+    version="060722-0.1",
     packages=find_packages()
 )
