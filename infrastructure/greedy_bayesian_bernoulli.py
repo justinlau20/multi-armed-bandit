@@ -43,25 +43,37 @@ class GreedyBayesianBernoulli(Game):
         return decision_index
 
 
-# visualisation of posterior distributions
-def plot_beta_pdf(ax, a, b):
-    x = np.linspace(0.01, 0.99, 99)
-    ax.plot(x, beta(a, b).pdf(x))
+# # visualisation of posterior distributions
+# def plot_beta_pdf(ax, a, b):
+#     x = np.linspace(0.01, 0.99, 99)
+#     ax.plot(x, beta(a, b).pdf(x))
 
 
-turns = [1, 2, 3, 4, 100, 500, 1000]
-g = [GreedyBayesianBernoulli(priors, i, *machines) for i in turns]
-for g_turn in g:
-    g_turn.simulate()
+# turns = [1, 2, 3, 4, 100, 500, 1000]
+# g = [GreedyBayesianBernoulli(priors, i, *machines) for i in turns]
+# for g_turn in g:
+#     g_turn.simulate()
 
-n = 6
+# n = 6
 
-fig, ax = plt.subplots(3, figsize=(5, 5))
-a, b = g[n].parameters[0][0], g[n].parameters[0][1]
-plot_beta_pdf(ax[0], a, b,)
-a, b = g[n].parameters[1][0], g[n].parameters[1][1]
-plot_beta_pdf(ax[1], a, b,)
-a, b = g[n].parameters[2][0], g[n].parameters[2][1]
-plot_beta_pdf(ax[2], a, b,)
+# fig, ax = plt.subplots(3, figsize=(5, 5))
+# a, b = g[n].parameters[0][0], g[n].parameters[0][1]
+# plot_beta_pdf(ax[0], a, b,)
+# a, b = g[n].parameters[1][0], g[n].parameters[1][1]
+# plot_beta_pdf(ax[1], a, b,)
+# a, b = g[n].parameters[2][0], g[n].parameters[2][1]
+# plot_beta_pdf(ax[2], a, b,)
 
-plt.show()
+# plt.show()
+
+
+"Begin debug"
+turns = 10
+obj1 = GreedyBayesianBernoulli(priors, turns, *machines)
+obj2 = GreedyBayesianBernoulli(priors, turns, *machines)
+obj1.simulate()
+obj2.simulate()
+print(obj2.parameters)
+
+print(f"The sum of all parameters should be {turns} + 6 = {turns + 6} "
+      f"but the sum here is {sum([sum(sublist) for sublist in obj2.parameters])}")
