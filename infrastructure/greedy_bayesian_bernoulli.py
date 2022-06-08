@@ -14,6 +14,7 @@ from infrastructure import *  # noqa: F403
 import numpy as np
 from scipy.stats import beta
 import matplotlib.pyplot as plt
+from copy import copy
 
 # initialize machines and beta priors (uniform dist.)
 machines = [bernoulli_machine(i) for i in [0.33, 0.55, 0.6]]  # noqa: F405
@@ -25,7 +26,7 @@ class GreedyBayesianBernoulli(Game):
 
     def __init__(self, prior_parameters, turns, *machines):
         super().__init__(turns, *machines)
-        self.parameters = prior_parameters
+        self.parameters = copy([copy(sublist) for sublist in prior_parameters])
 
     def _update(self, index, outcome):
         super()._update(index, outcome)
@@ -75,5 +76,9 @@ obj1.simulate()
 obj2.simulate()
 print(obj2.parameters)
 
-print(f"The sum of all parameters should be {turns} + 6 = {turns + 6} "
-      f"but the sum here is {sum([sum(sublist) for sublist in obj2.parameters])}")
+print(f"The sum of all parameters should be {turns} + 6 = {turns + 6} ")
+
+if turns+6 == sum([sum(sublist) for sublist in obj2.parameters]):
+    print("should be fixed now")
+else:
+    print("still wrong")
