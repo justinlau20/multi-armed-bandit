@@ -14,6 +14,7 @@ from infrastructure import *  # noqa: F403
 import numpy as np
 from scipy.stats import beta
 import matplotlib.pyplot as plt
+from copy import copy
 
 # initialize machines and beta priors (uniform dist.)
 machines = [bernoulli_machine(i) for i in [0.33, 0.55, 0.6]]  # noqa: F405
@@ -25,7 +26,7 @@ class GreedyBayesianBernoulli(Game):
 
     def __init__(self, prior_parameters, turns, *machines):
         super().__init__(turns, *machines)
-        self.parameters = prior_parameters
+        self.parameters = copy([copy(sublist) for sublist in prior_parameters])
 
     def _update(self, index, outcome):
         super()._update(index, outcome)
@@ -43,25 +44,41 @@ class GreedyBayesianBernoulli(Game):
         return decision_index
 
 
-# visualisation of posterior distributions
-def plot_beta_pdf(ax, a, b):
-    x = np.linspace(0.01, 0.99, 99)
-    ax.plot(x, beta(a, b).pdf(x))
+# # visualisation of posterior distributions
+# def plot_beta_pdf(ax, a, b):
+#     x = np.linspace(0.01, 0.99, 99)
+#     ax.plot(x, beta(a, b).pdf(x))
 
 
-turns = [1, 2, 3, 4, 100, 500, 1000]
-g = [GreedyBayesianBernoulli(priors, i, *machines) for i in turns]
-for g_turn in g:
-    g_turn.simulate()
+# turns = [1, 2, 3, 4, 100, 500, 1000]
+# g = [GreedyBayesianBernoulli(priors, i, *machines) for i in turns]
+# for g_turn in g:
+#     g_turn.simulate()
 
-n = 6
+# n = 6
 
-fig, ax = plt.subplots(3, figsize=(5, 5))
-a, b = g[n].parameters[0][0], g[n].parameters[0][1]
-plot_beta_pdf(ax[0], a, b,)
-a, b = g[n].parameters[1][0], g[n].parameters[1][1]
-plot_beta_pdf(ax[1], a, b,)
-a, b = g[n].parameters[2][0], g[n].parameters[2][1]
-plot_beta_pdf(ax[2], a, b,)
+# fig, ax = plt.subplots(3, figsize=(5, 5))
+# a, b = g[n].parameters[0][0], g[n].parameters[0][1]
+# plot_beta_pdf(ax[0], a, b,)
+# a, b = g[n].parameters[1][0], g[n].parameters[1][1]
+# plot_beta_pdf(ax[1], a, b,)
+# a, b = g[n].parameters[2][0], g[n].parameters[2][1]
+# plot_beta_pdf(ax[2], a, b,)
 
-plt.show()
+# plt.show()
+
+
+"Begin debug"
+turns = 10
+obj1 = GreedyBayesianBernoulli(priors, turns, *machines)
+obj2 = GreedyBayesianBernoulli(priors, turns, *machines)
+obj1.simulate()
+obj2.simulate()
+print(obj2.parameters)
+
+print(f"The sum of all parameters should be {turns} + 6 = {turns + 6} ")
+
+if turns+6 == sum([sum(sublist) for sublist in obj2.parameters]):
+    print("should be fixed now")
+else:
+    print("still wrong")
