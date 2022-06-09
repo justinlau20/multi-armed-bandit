@@ -62,6 +62,8 @@ class Game:
         a tuple of mean outcomes for each machine
     wealth:
         self explanatory
+    decision_history:
+        a list of the decisions made for all turns (indicies of machines)
     """
 
     def __init__(self, turns, *machines):
@@ -72,6 +74,7 @@ class Game:
         self.machines = machines
         self.means = [0]*self.machine_count
         self.wealth = 0
+        self.decision_history = []
         if all([m.mean is not None for m in machines]):
             self.regret = 0
             self.best_machine_mean = max([m.mean for m in machines])
@@ -96,6 +99,7 @@ class Game:
         Progresses the game by one time step.
         """
         decision = self.decide()
+        self.decision_history.append(decision)
         outcome = self.machines[decision].spin()
         self._update(decision, outcome)
         self.next_turn += 1

@@ -66,16 +66,18 @@ def plot_beta_pdf(ax, a, b):
 
 
 turns = [10, 50, 100, 1000]
-g = [GreedyBayesianBernoulli(priors, 0.05, 1, i, *machines) for i in turns]
+g = [GreedyBayesianBernoulli(priors, 0.02, 1.8, i, *machines) for i in turns]
 for g_turn in g:
     g_turn.simulate()
 
-fig, ax = plt.subplots(3, figsize=(5, 5))
+fig, ax = plt.subplots(4, figsize=(5, 8))
 
 for i in range(len(turns)):
     for j in range(len(machines)):
         a, b = g[i].parameters[j][0], g[i].parameters[j][1]
         plot_beta_pdf(ax[j], a, b)
+
+ax[3].plot(g[3].decision_history, marker='.', linestyle="None")
 
 """ a, b = g[n].parameters[0][0], g[n].parameters[0][1]
 plot_beta_pdf(ax[0], a, b)
