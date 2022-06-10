@@ -5,7 +5,7 @@ import random
 """
 Suppose we are given 3 machines with payouts following Bern(0.33), Bern(0.55)
 and Bern(0.6) respectively and we play 1000 rounds in total.
-We employ the method of double sampling. See https://arxiv.org/pdf/1709.03162.pdf. 
+We employ the method of randomised probability matching. See https://arxiv.org/pdf/1709.03162.pdf. 
 """
 
 # initialise machines
