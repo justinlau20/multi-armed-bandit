@@ -79,7 +79,7 @@ class RPMBernoulli(Game):
 # α, β parameters for beta prior
 # α = β = 1 gives uniform distribution
 priors = [[1,1] for i in range(len(machines))]
-g = DoubleSamplingBernoulli(priors, 100, 1000, *machines)
+g = RPMBernoulli(priors, 100, 1000, *machines)
 g.simulate()
 
 # visualisation of posterior distributions
