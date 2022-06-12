@@ -1,5 +1,6 @@
 from WLLN import WLLNExampleScenario, WLLN
 from UCB import UCB_bernoulli
+from thompson_bernoulli_no_output import ThompsonSamplingBernoulli
 from infrastructure import *
 from math import sqrt
 from numpy import log
@@ -22,12 +23,21 @@ def wlln(turns):
     
     return g
 
+priors = [[1,1] for i in range(len(machines))]
+def thompson(turns):
+    g = ThompsonSamplingBernoulli(priors, turns, *machines).simulate("obj")
+    return g
+
+
 turns = 1000
 trials = 100
-ucb_outs = []
-wlln_outs = []
+funcs = [ucb, wlln, thompson]
+outputs = [[] for func in funcs]
 for i in range(trials):
-    ucb_outs.append(ucb(turns).regret)
-    wlln_outs.append(wlln(turns).regret)
-print(f'The mean regret of ucb over {trials} trials, each having turn count {turns} is {np.mean(ucb_outs)}')
-print(f'The mean regret of wlln over {trials} trials, each having turn count {turns} is {np.mean(wlln_outs)}')
+    for i, func in enumerate(funcs):
+        outputs[i].append(func(turns).regret)
+for i in range(len(funcs)):
+    print(f'The mean regret of {funcs[i].__name__} over {trials} trials,'
+          f' each having turn count {turns} is {np.mean(outputs[i])}')
+# print(outputs[2])
+# print(f'The mean regret of wlln over {trials} trials, each having turn count {turns} is {np.mean(wlln_outs)}')
