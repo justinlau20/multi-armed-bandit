@@ -1,7 +1,7 @@
-from telnetlib import GA
 from infrastructure import *
 from math import sqrt
 from numpy import log
+from running_stats import RunningStats
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,11 +16,13 @@ class WLLN(Game):
         self.sds = [0] * self.machine_count
         self.scores = [0] * self.machine_count
         self.times_chosen = [0] * self.machine_count
+        self.rs = [RunningStats() for i in range(self.machine_count)]
         self.z = z
 
     def _update(self, index, outcome):
         super()._update(index, outcome)
-        self.sds[index] = np.std(self.history[index])
+        self.rs[index].push(outcome)
+        self.sds[index] = self.rs[index].standard_deviation()
         self.times_chosen[index] += 1
         self.scores[index] = self.means[index] + self.z * self.sds[index] / \
                             sqrt(self.times_chosen[index])
@@ -36,24 +38,23 @@ class WLLNExampleScenario(WLLN):
         super().__init__(turns, 10, 1.96, *machines)
 
 
-turns = [10**i for i in range(1, 5)]
-g = [WLLNExampleScenario(i) for i in turns]
-for g_turn in g:
-    g_turn.simulate()
+# turns = [10**i for i in range(1, 5)]
+# g = [WLLNExampleScenario(i) for i in turns]
+# for g_turn in g:
+#     g_turn.simulate()
 
 
-for i, obj in enumerate(g):
-    print(f"The regret of simulating the situation with total turns T"
-          f"={turns[i]} is {obj.regret}")
+# for i, obj in enumerate(g):
+#     print(f"The regret of simulating the situation with total turns T"
+#           f"={turns[i]} is {obj.regret}")
 
-# print(g[-1].del_i)
-fig, (ax1, ax2) = plt.subplots(1, 2)
-historical_regret = np.array(g[-1].historical_regret)
-# bounds = g[-1].bounds
-ax1.plot(historical_regret)
-# ax1.plot(bounds)
-ax2.plot(historical_regret)
-# ax2.plot(bounds)
-ax2.set_xscale('log')
-
-plt.show()
+# # print(g[-1].del_i)
+# fig, (ax1, ax2) = plt.subplots(1, 2)
+# historical_regret = np.array(g[-1].historical_regret)
+# # bounds = g[-1].bounds
+# ax1.plot(historical_regret)
+# # ax1.plot(bounds)
+# ax2.plot(historical_regret)
+# # ax2.plot(bounds)
+# ax2.set_xscale('log')
+# plt.show()

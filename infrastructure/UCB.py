@@ -41,25 +41,25 @@ def get_bound(del_i, T, a):
     return sum(temp)
 
 
-alpha = 2
-turns = [10**i for i in range(1, 6)]
-g = [UCB_bernoulli(i, alpha, *machines) for i in turns]
-for g_turn in g:
-    g_turn.simulate()
+# alpha = 2
+# turns = [10**i for i in range(1, 6)]
+# g = [UCB_bernoulli(i, alpha, *machines) for i in turns]
+# for g_turn in g:
+#     g_turn.simulate()
 
 
-for i, obj in enumerate(g):
-    print(f"The regret of simulating the situation with total turns T"
-          f"={turns[i]} is {obj.regret}")
+# for i, obj in enumerate(g):
+#     print(f"The regret of simulating the situation with total turns T"
+#           f"={turns[i]} is {obj.regret}")
 
-# print(g[-1].del_i)
-fig, (ax1, ax2) = plt.subplots(1, 2)
-historical_regret = np.array(g[-1].historical_regret)
-# bounds = g[-1].bounds
-ax1.plot(historical_regret)
-# ax1.plot(bounds)
-ax2.plot(historical_regret)
-# ax2.plot(bounds)
-ax2.set_xscale('log')
+# # print(g[-1].del_i)
+# fig, (ax1, ax2) = plt.subplots(1, 2)
+# historical_regret = np.array(g[-1].historical_regret)
+# # bounds = g[-1].bounds
+# ax1.plot(historical_regret)
+# # ax1.plot(bounds)
+# ax2.plot(historical_regret)
+# # ax2.plot(bounds)
+# ax2.set_xscale('log')
 
-plt.show()
+# plt.show()
