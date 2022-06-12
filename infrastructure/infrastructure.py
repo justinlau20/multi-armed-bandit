@@ -75,6 +75,7 @@ class Game:
         self.means = [0]*self.machine_count
         self.wealth = 0
         self.decision_history = []
+        self.historical_regret = [0]
         if all([m.mean is not None for m in machines]):
             self.regret = 0
             self.best_machine_mean = max([m.mean for m in machines])
@@ -93,6 +94,7 @@ class Game:
         self.wealth += outcome
         if self.regret is not None:
             self.regret += self.best_machine_mean - self.machines[index].mean
+            self.historical_regret.append(self.regret)
 
     def _step(self):
         """
