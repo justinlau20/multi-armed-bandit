@@ -51,9 +51,7 @@ class RPMBernoulli(Game):
     def decide(self):
         
         # Monte Carlo sampling
-        mc_samples = np.empty((0, self.m))
-        for a, b in self.post_parameters:
-            mc_samples = np.append(mc_samples, [np.random.beta(a, b, self.m)], axis=0)
+        mc_samples = np.array([np.random.beta(a, b, self.m) for a, b in self.post_parameters])
         
         # Approximate the conditional probability integral using indicator functions
         indicator_mat = np.zeros((len(machines), self.m), dtype=int)
