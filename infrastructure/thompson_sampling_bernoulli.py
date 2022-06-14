@@ -45,9 +45,7 @@ class ThompsonSamplingBernoulli(Game):
     def decide(self):
         
         # beta posterior distribution parameters
-        post_samples = []
-        for a, b in self.post_parameters:
-            post_samples.append(np.random.beta(a, b))
+        post_samples = [np.random.beta(a, b) for a, b in self.post_parameters]
         return np.argmax(post_samples)
     
     # overwrite _update to store posterior parameters
