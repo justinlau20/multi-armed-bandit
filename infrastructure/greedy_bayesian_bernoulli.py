@@ -16,42 +16,59 @@ from scipy.stats import beta
 import matplotlib.pyplot as plt
 from copy import copy
 import random
-from math import sqrt
 
-# initialize machines and beta priors (uniform dist.)
-machines = [bernoulli_machine(i) for i in [0.1, 0.33, 0.55, 0.6, 0.8, 0.81]]  # noqa: F405
+# initialize machines and beta (1, 1) priors (uniform dist.)
+machines = [bernoulli_machine(i) for i in [0.33, 0.55, 0.6]]  # noqa: F405
 priors = [[1, 1] for i in range(len(machines))]
 
 
-class GreedyBayesianBernoulli(Game):
+class GreedyBayesianBernoulli(Game):  # noqa: F405
     """Greedy Bayesian using beta prior."""
 
     def __init__(self, prior_parameters, threshold, ucb, turns, *machines):
-        super().__init__(turns, *machines)
+        """
+        We define additional attributes to implement this method.
+
+        self.parameters     store the parameters of the beta distribution
+                            at the current time step. This gets updated
+                            to the posterior when an outcome is observed
+                            and gets carried over as the prior for the
+                            next time step.
+        self.threshold      the probability that the algorithm 'explores'
+                            instead of exploiting at each step. Pass in
+                            0 to make the method purely greedy.
+        self.ucb            the upper confidence percentile of the
+                            parameter - calculated at each time step
+                            from the prior
+        """
+        super().__init__(turns, *machines)  # inherit class attributes
         self.parameters = copy([copy(sublist) for sublist in prior_parameters])
         self.threshold = threshold
         self.ucb = ucb
 
-    def _update(self, index, outcome):
+    def _update(self, index, outcome):  # need to overwrite update for Bayesian
         super()._update(index, outcome)
 
+        # the following results follow from cojugate priors
         if outcome == 1:
             self.parameters[index][0] += 1
         else:
             self.parameters[index][1] += 1
 
-    def decide(self):
-        e = random.uniform(0, 1)
-        pre_mean = [beta[0] / (beta[0] + beta[1])
-                    for beta in self.parameters]
-        pre_std = [beta.ppf(self.ucb, para[0], para[1], loc=0, scale=1)
-                   for para in self.parameters]
-        pre_ucb = [pre_std[i]
-                   for i in range(len(self.parameters))]
+    def decide(self):  # the decision-making step based on the current model
+        e = random.uniform(0, 1)  # used later for exploitation/exploration
+        # pre_mean = [beta[0] / (beta[0] + beta[1])  # noqa: F841
+        #             for beta in self.parameters]
 
+        # compute the UCB for each machine given the user-input percentile
+        pre_ucb = [beta.ppf(self.ucb, para[0], para[1], loc=0, scale=1)
+                   for para in self.parameters]  # from scipy.stats
+
+        # decide: exploit the best option (UCB)/explore another random machine
         if e > self.threshold:
             decision_index = np.argmax(pre_ucb)
         else:
+            # can improve on code readability
             index = [i for i, _ in enumerate(machines)]
             index.pop(np.argmax(pre_ucb))
             decision_index = random.choice(index)
@@ -59,17 +76,21 @@ class GreedyBayesianBernoulli(Game):
         return decision_index
 
 
-# visualisation of posterior distributions
+# define a plotting template for a beta pdf
 def plot_beta_pdf(ax, a, b):
     x = np.linspace(0.01, 0.99, 99)
     ax.plot(x, beta(a, b).pdf(x))
 
 
-turns = [10, 50, 100, 1000]
-g = [GreedyBayesianBernoulli(priors, 0.02, 0.8, i, *machines) for i in turns]
+# simulate for different number of turns - once each; store in a list
+turns = [10, 100, 1000]
+# example in git repo passes a 0.02 chance of random exploration with
+# exploitation determined by the 90% upper bound
+g = [GreedyBayesianBernoulli(priors, 0.02, 0.9, i, *machines) for i in turns]
 for g_turn in g:
     g_turn.simulate()
 
+# generate and fill out the plot
 fig, ax = plt.subplots(len(machines) + 1, figsize=(5, 10))
 
 for i in range(len(turns)):
@@ -77,15 +98,8 @@ for i in range(len(turns)):
         a, b = g[i].parameters[j][0], g[i].parameters[j][1]
         plot_beta_pdf(ax[j], a, b)
 
-ax[-1].plot(g[-1].decision_history, marker='.', markersize = 2, linestyle="None")
-
-""" a, b = g[n].parameters[0][0], g[n].parameters[0][1]
-plot_beta_pdf(ax[0], a, b)
-a, b = g[n+1].parameters[0][0], g[n+1].parameters[0][1]
-plot_beta_pdf(ax[0], a, b)
-a, b = g[n].parameters[1][0], g[n].parameters[1][1]
-plot_beta_pdf(ax[1], a, b)
-a, b = g[n].parameters[2][0], g[n].parameters[2][1]
-plot_beta_pdf(ax[2], a, b) """
+# add in a plot of the decision history - note that this is only implicative 
+# of regret
+ax[-1].plot(g[-1].decision_history, marker='.', markersize=2, linestyle="None")
 
 plt.show()
