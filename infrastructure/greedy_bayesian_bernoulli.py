@@ -19,7 +19,7 @@ import random
 from math import sqrt
 
 # initialize machines and beta priors (uniform dist.)
-machines = [bernoulli_machine(i) for i in [0.33, 0.55, 0.6]]  # noqa: F405
+machines = [bernoulli_machine(i) for i in [0.1, 0.33, 0.55, 0.6, 0.8, 0.81]]  # noqa: F405
 priors = [[1, 1] for i in range(len(machines))]
 
 
@@ -44,9 +44,9 @@ class GreedyBayesianBernoulli(Game):
         e = random.uniform(0, 1)
         pre_mean = [beta[0] / (beta[0] + beta[1])
                     for beta in self.parameters]
-        pre_std = [sqrt(beta[0] * beta[1] / ((beta[0] + beta[1]) ** 2
-                   + (beta[0] + beta[1] + 1))) for beta in self.parameters]
-        pre_ucb = [pre_mean[i] + self.ucb * pre_std[i]
+        pre_std = [beta.ppf(self.ucb, para[0], para[1], loc=0, scale=1)
+                   for para in self.parameters]
+        pre_ucb = [pre_std[i]
                    for i in range(len(self.parameters))]
 
         if e > self.threshold:
@@ -66,18 +66,18 @@ def plot_beta_pdf(ax, a, b):
 
 
 turns = [10, 50, 100, 1000]
-g = [GreedyBayesianBernoulli(priors, 0.02, 1.8, i, *machines) for i in turns]
+g = [GreedyBayesianBernoulli(priors, 0.02, 0.8, i, *machines) for i in turns]
 for g_turn in g:
     g_turn.simulate()
 
-fig, ax = plt.subplots(4, figsize=(5, 8))
+fig, ax = plt.subplots(len(machines) + 1, figsize=(5, 10))
 
 for i in range(len(turns)):
     for j in range(len(machines)):
         a, b = g[i].parameters[j][0], g[i].parameters[j][1]
         plot_beta_pdf(ax[j], a, b)
 
-ax[3].plot(g[3].decision_history, marker='.', linestyle="None")
+ax[-1].plot(g[-1].decision_history, marker='.', markersize = 2, linestyle="None")
 
 """ a, b = g[n].parameters[0][0], g[n].parameters[0][1]
 plot_beta_pdf(ax[0], a, b)
