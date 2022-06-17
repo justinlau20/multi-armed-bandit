@@ -105,3 +105,5 @@ for n, turn in enumerate(turns):
         plot_beta_pdf(ax[n+1], a, b,)
         ax[n+1].legend([i+1 for i in range(len(machines))])
     ax[n+1].set_title(f"Posterior distributions after {turn} turn(s)")
+
+plt.show()
