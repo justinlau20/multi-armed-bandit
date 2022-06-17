@@ -4,10 +4,7 @@ and Bern(0.6) respectively and we play 1000 rounds in total.
 We employ the method of Thompson sampling.
 """
 
-<<<<<<< HEAD:infrastructure/ts_historical_regret.py
 import enum
-=======
->>>>>>> 576b81fd4765226d3f51296b85f9eb3e15e1c1d9:infrastructure/thompson_sampling_bernoulli.py
 from infrastructure import *
 from copy import deepcopy
 from scipy.stats import beta
@@ -51,7 +48,9 @@ class ThompsonSamplingBernoulli(Game):
     def decide(self):
         
         # beta posterior distribution parameters
-        post_samples = [np.random.beta(a, b) for a, b in self.post_parameters]
+        post_samples = []
+        for a, b in self.post_parameters:
+            post_samples.append(np.random.beta(a, b))
         return np.argmax(post_samples)
     
     # overwrite _update to store posterior parameters
@@ -69,48 +68,26 @@ class ThompsonSamplingBernoulli(Game):
 # α = β = 1 gives uniform distribution
 priors = [[1,1] for i in range(len(machines))]
 
-# m = 7
-# h_regrets = [ThompsonSamplingBernoulli(priors,
-#             10**i, *machines).simulate('obj').historical_regret
-#             for i in range(2, m+1)]
+m = 6
+h_regrets = [ThompsonSamplingBernoulli(priors,
+            10**i, *machines).simulate('obj').historical_regret
+            for i in range(2, m+1)]
 
-# # plt.plot(gs[0])
-# # plt.show()
-# for n, y in enumerate(h_regrets):
-#     ax = plt.subplot(3, 2, n+1)
-#     ax.plot(y)
+# plt.plot(gs[0])
 # plt.show()
-
-beg = 5000
-end = 10000
-g = ThompsonSamplingBernoulli(priors, end, *machines).simulate("obj")
-y = g.historical_regret
-x = np.arange(beg, end+1)
-plt.plot(y)
-a, b = np.polyfit(x, np.log(y[beg:]), 1)
-print(a, b)
-
-<<<<<<< HEAD:infrastructure/ts_historical_regret.py
-plt.plot(x, np.exp(a**x+b))
+for n, y in enumerate(h_regrets):
+    ax = plt.subplot(3, 2, n+1)
+    ax.plot(y)
 plt.show()
-=======
-turns = [1,2,3,4,5,10,50,500,1000]
-g.post_parameters_history
-fig, ax = plt.subplots(len(turns)+1, figsize=(5,40))
 
-# prior distributions
-for a, b in g.post_parameters_history[0]:
-    plot_beta_pdf(ax[0], a, b,)
-    ax[0].legend([i+1 for i in range(len(machines))])
-    ax[0].set_title("Prior distributions")
+# beg = 5000
+# end = 10000
+# g = ThompsonSamplingBernoulli(priors, end, *machines).simulate("obj")
+# y = g.historical_regret
+# x = np.arange(beg, end+1)
+# plt.plot(y)
+# a, b = np.polyfit(x, np.log(y[beg:]), 1)
+# print(a, b)
 
-# posterior distributions at different turns
-for n, turn in enumerate(turns):
-    for index in range(len(machines)):
-        a, b = g.post_parameters_history[turn][index]
-        plot_beta_pdf(ax[n+1], a, b,)
-        ax[n+1].legend([i+1 for i in range(len(machines))])
-    ax[n+1].set_title(f"Posterior distributions after {turn} turn(s)")
-
-plt.show()
->>>>>>> 576b81fd4765226d3f51296b85f9eb3e15e1c1d9:infrastructure/thompson_sampling_bernoulli.py
+# plt.plot(x, np.exp(a**x+b))
+# plt.show()
