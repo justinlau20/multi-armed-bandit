@@ -14,7 +14,7 @@ from infrastructure import *  # noqa: F403
 import numpy as np
 from scipy.stats import beta
 import matplotlib.pyplot as plt
-from copy import copy
+from copy import copy, deepcopy
 import random
 
 # initialize machines and beta (1, 1) priors (uniform dist.)
@@ -34,6 +34,8 @@ class GreedyBayesianBernoulli(Game):  # noqa: F405
                             to the posterior when an outcome is observed
                             and gets carried over as the prior for the
                             next time step.
+        self.post_param     history of beta paramters for all time steps
+        eters_history
         self.threshold      the probability that the algorithm 'explores'
                             instead of exploiting at each step. Pass in
                             0 to make the method purely greedy.
@@ -43,6 +45,7 @@ class GreedyBayesianBernoulli(Game):  # noqa: F405
         """
         super().__init__(turns, *machines)  # inherit class attributes
         self.parameters = copy([copy(sublist) for sublist in prior_parameters])
+        self.post_parameters_history = [deepcopy(prior_parameters)]
         self.threshold = threshold
         self.ucb = ucb
 
@@ -54,6 +57,9 @@ class GreedyBayesianBernoulli(Game):  # noqa: F405
             self.parameters[index][0] += 1
         else:
             self.parameters[index][1] += 1
+
+        # update history
+        self.post_parameters_history.append(deepcopy(self.parameters))
 
     def decide(self):  # the decision-making step based on the current model
         e = random.uniform(0, 1)  # used later for exploitation/exploration
@@ -82,24 +88,23 @@ def plot_beta_pdf(ax, a, b):
     ax.plot(x, beta(a, b).pdf(x))
 
 
-# simulate for different number of turns - once each; store in a list
-turns = [10, 100, 1000]
+# simulate for 1000 turns
+turns = 1000
 # example in git repo passes a 0.02 chance of random exploration with
 # exploitation determined by the 90% upper bound
-g = [GreedyBayesianBernoulli(priors, 0.02, 0.9, i, *machines) for i in turns]
-for g_turn in g:
-    g_turn.simulate()
+g = GreedyBayesianBernoulli(priors, 0.02, 0.95, turns, *machines)
+g.simulate()
 
 # generate and fill out the plot
 fig, ax = plt.subplots(len(machines) + 1, figsize=(5, 10))
 
-for i in range(len(turns)):
+for i in [10, 100, 1000]:
     for j in range(len(machines)):
-        a, b = g[i].parameters[j][0], g[i].parameters[j][1]
+        a, b = g.post_parameters_history[i][j]
         plot_beta_pdf(ax[j], a, b)
 
-# add in a plot of the decision history - note that this is only implicative 
+# add in a plot of the decision history - note that this is only implicative
 # of regret
-ax[-1].plot(g[-1].decision_history, marker='.', markersize=2, linestyle="None")
+ax[-1].plot(g.decision_history, marker='.', markersize=2, linestyle="None")
 
 plt.show()
