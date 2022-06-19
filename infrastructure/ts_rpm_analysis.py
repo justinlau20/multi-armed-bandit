@@ -1,6 +1,6 @@
 from infrastructure import *
 from RPM import RPMBernoulli
-from thompson_bernoulli_no_output import ThompsonSamplingBernoulli
+from TS import ThompsonSamplingBernoulli
 import matplotlib.pyplot as plt
 import dill
 import bz2
@@ -11,16 +11,16 @@ import bz2
 #     dill.dump(rpm_games, handle)
 
 with bz2.open('ts_n100_T5000.bz2', 'rb') as handle:
-    ts_games2 = dill.load(handle)
+    ts_games = dill.load(handle)
 with bz2.open('rpm_n100_T5000.bz2', 'rb') as handle:
-    rpm_games2 = dill.load(handle)
+    rpm_games = dill.load(handle)
 
 n = 100     # no of simulations
 T = 5000    # horizon
 
 # compare cumulative regret
-ts_regret = np.array([ts_game.historical_regret for ts_game in ts_games2])
-rpm_regret = np.array([rpm_game.historical_regret for rpm_game in rpm_games2])
+ts_regret = np.array([ts_game.historical_regret for ts_game in ts_games])
+rpm_regret = np.array([rpm_game.historical_regret for rpm_game in rpm_games])
 
 # plot averaged cumulative regret with 95% confidence interval
 fig, ax = plt.subplots()
