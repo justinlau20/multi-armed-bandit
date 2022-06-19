@@ -1,6 +1,6 @@
 from WLLN import WLLNExampleScenario, WLLN
 from UCB import UCB_bernoulli
-from thompson_bernoulli_no_output import ThompsonSamplingBernoulli
+from TS import ThompsonSamplingBernoulli
 from infrastructure import *
 from math import sqrt
 from numpy import log
