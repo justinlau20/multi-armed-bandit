@@ -59,6 +59,7 @@ lowers = [np.percentile(hist_regret, lower, axis=0) for hist_regret in hist_regr
 
 for b, u, col in zip(lowers, uppers, colors):
     ax.fill_between(range(T+1), b, u, alpha=0.5, color=col)
+
 # ax.fill_between(range(T+1), ts_regret_b, ts_regret_u, color='red', alpha=0.5)
 # ax.fill_between(range(T+1), rpm_regret_b, rpm_regret_u, color='gray', alpha=0.5)
 
