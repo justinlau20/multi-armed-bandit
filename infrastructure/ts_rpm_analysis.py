@@ -12,6 +12,7 @@ import numpy as np
 #     dill.dump(rpm_games, handle)
 files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2']
 names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian']
+colors = ['red', 'black', 'green']
 strats = []
 for file in files:
     with bz2.open(file, 'rb') as handle:
@@ -23,7 +24,6 @@ for file in files:
 #     rpm_games = dill.load(handle)
 # with bz2.open('gbb_n100_T5000.bz2', 'rb') as handle:
 #     gbb_games = dill.load(handle)
-
 
 
 n = 100     # no of simulations
@@ -38,8 +38,8 @@ hist_regret_arrs = [np.array([game.historical_regret for game in games]) for gam
 
 
 fig, ax = plt.subplots()
-for arr in hist_regret_arrs:
-    ax.plot(range(T+1), np.mean(arr, axis=0))
+for arr, col in zip(hist_regret_arrs, colors):
+    ax.plot(range(T+1), np.mean(arr, axis=0), color=col)
 ax.legend(names)
 
 # # plot averaged cumulative regret with 95% confidence interval
@@ -57,8 +57,8 @@ lowers = [np.percentile(hist_regret, lower, axis=0) for hist_regret in hist_regr
 # rpm_regret_b = np.percentile(rpm_regret, 2.5, axis=0)
 
 
-for b, u in zip(lowers, uppers):
-    ax.fill_between(range(T+1), b, u, alpha=0.5)
+for b, u, col in zip(lowers, uppers, colors):
+    ax.fill_between(range(T+1), b, u, alpha=0.5, color=col)
 # ax.fill_between(range(T+1), ts_regret_b, ts_regret_u, color='red', alpha=0.5)
 # ax.fill_between(range(T+1), rpm_regret_b, rpm_regret_u, color='gray', alpha=0.5)
 
