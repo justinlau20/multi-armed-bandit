@@ -8,12 +8,14 @@ import bz2
 import numpy as np
 
 
-files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2']
-names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian']
-colors = ['red', 'black', 'green']
+files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2',
+        'UCB_n100_T5000.bz2', 'Exp3_n100_T5000.bz2']
+names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian', 'UCB', 'Exp3']
+colors = ['red', 'black', 'green', 'yellow', 'purple']
 strats = []
 for file in files:
     with bz2.open(file, 'rb') as handle:
+        # print(file)
         strats.append(dill.load(handle))
 
 
@@ -37,7 +39,7 @@ strat_u_b = [[get_u_b(arrs, conf) for conf in confidences] for arrs in hist_regr
 mean_arrs = [np.mean(arr, axis=0) for arr in hist_regret_arrs]
 
 for n, strat in enumerate(strat_u_b):
-    ax = plt.subplot(2, 2, n+1)
+    ax = plt.subplot(3, 2, n+1)
     ax.plot(range(T+1), mean_arrs[n])
     for confidence in strat:
         u, b = confidence

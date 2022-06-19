@@ -10,9 +10,9 @@ import numpy as np
 #     dill.dump(ts_games, handle)
 # with bz2.BZ2File('rpm_n100_T5000.bz2', 'wb') as handle:
 #     dill.dump(rpm_games, handle)
-files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2']
-names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian']
-colors = ['red', 'black', 'green']
+files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2', 'UCB_n100_T5000.bz2']
+names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian', 'UCB']
+colors = ['red', 'black', 'green', 'yellow']
 strats = []
 for file in files:
     with bz2.open(file, 'rb') as handle:
@@ -58,7 +58,7 @@ lowers = [np.percentile(hist_regret, lower, axis=0) for hist_regret in hist_regr
 
 
 for b, u, col in zip(lowers, uppers, colors):
-    ax.fill_between(range(T+1), b, u, alpha=0.5, color=col)
+    ax.fill_between(range(T+1), b, u, alpha=0.7, color=col)
 
 # ax.fill_between(range(T+1), ts_regret_b, ts_regret_u, color='red', alpha=0.5)
 # ax.fill_between(range(T+1), rpm_regret_b, rpm_regret_u, color='gray', alpha=0.5)
