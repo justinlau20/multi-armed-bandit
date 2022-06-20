@@ -40,7 +40,7 @@ hist_regret_arrs = [np.array([game.historical_regret for game in games]) for gam
 fig, ax = plt.subplots()
 for arr, col in zip(hist_regret_arrs, colors):
     ax.plot(range(T+1), np.mean(arr, axis=0), color=col)
-ax.legend(names)
+ax.legend(names, loc='upper left')
 
 # # plot averaged cumulative regret with 95% confidence interval
 # fig, ax = plt.subplots()
@@ -63,9 +63,9 @@ for b, u, col in zip(lowers, uppers, colors):
 # ax.fill_between(range(T+1), ts_regret_b, ts_regret_u, color='red', alpha=0.5)
 # ax.fill_between(range(T+1), rpm_regret_b, rpm_regret_u, color='gray', alpha=0.5)
 
-ax.set_title(f"Averaged cumulative regret over {n} simulations \n with a 95% confidence interval")
-ax.set_xlabel("Horizon")
-ax.set_ylabel("Cumulative regret")
+# ax.set_title(f"Averaged cumulative regret over {n} simulations \n with a 95% confidence interval")
+ax.set_xlabel("Horizon", fontsize=17)
+ax.set_ylabel("Cumulative regret", fontsize=17)
 
 # plt.savefig("fig1.pdf")
 plt.show()

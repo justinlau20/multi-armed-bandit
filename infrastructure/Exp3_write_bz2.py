@@ -3,7 +3,7 @@ from math import sqrt, log, exp
 import dill
 import bz2
 
-machines = [bernoulli_machine(i) for i in [0.2, 0.4, 0.6]]
+# machines = [bernoulli_machine(i) for i in [0.2, 0.4, 0.6]]
 
 class RiggedGame(Game):
     """A class to represent the game, including the state of the game
@@ -55,7 +55,7 @@ class RiggedGame(Game):
 
 
 # set up the machines
-machines = [bernoulli_machine(i) for i in [0.2, 0.4, 0.6]]
+machines = [bernoulli_machine(i) for i in [0.33, 0.55, 0.6]]
 
 
 # simulate once

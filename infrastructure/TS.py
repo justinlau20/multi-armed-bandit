@@ -7,9 +7,11 @@ We employ the method of Thompson sampling.
 from infrastructure import *
 from copy import deepcopy
 import matplotlib.pyplot as plt
+import dill
+import bz2
 
 # initialise machines
-machines = [bernoulli_machine(i) for i in [0.33, 0.55, 0.6]]
+machines = [bernoulli_machine(i) for i in [0.01]*2+[0.02]]
 
 class ThompsonSamplingBernoulli(Game):
     """
