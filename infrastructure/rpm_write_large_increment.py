@@ -11,7 +11,7 @@ We employ the method of randomised probability matching. See https://arxiv.org/p
 """
 
 # initialise machines
-machines = [bernoulli_machine(i) for i in [0.01]*2+[0.02]]
+machines = [bernoulli_machine(i) for i in [0.5, 0.505]]
 
 class RPMBernoulli(Game):
     """
@@ -80,5 +80,5 @@ class RPMBernoulli(Game):
 # α = β = 1 gives uniform distribution
 priors = [[1,1] for i in range(len(machines))]
 rpm_games = [RPMBernoulli(priors, 100, 5000, *machines).simulate("obj") for i in range(100)]
-with bz2.BZ2File('rpm_small_increment.bz2', 'wb') as handle:
+with bz2.BZ2File('rpm_small2.bz2', 'wb') as handle:
     dill.dump(rpm_games, handle)

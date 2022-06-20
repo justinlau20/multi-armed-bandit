@@ -10,8 +10,15 @@ import numpy as np
 #     dill.dump(ts_games, handle)
 # with bz2.BZ2File('rpm_n100_T5000.bz2', 'wb') as handle:
 #     dill.dump(rpm_games, handle)
-files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2', 'UCB_n100_T5000.bz2']
-names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian', 'UCB']
+
+# files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2', 'UCB_n100_T5000.bz2']
+# files = ["TS_small_increment.bz2", 'rpm_small_increment.bz2', 'gbb_small_increment.bz2', 'UCBft_small_increment.bz2']
+files = ['UCB_large_custom.bz2']
+# files = ['TS_many_arm.bz2', 'rpm_many_arm.bz2', 'gbb_many_arm.bz2', 'UCB_many_arm.bz2', ]
+
+# files = ['TS_small2.bz2', 'rpm_small2.bz2', 'gbb_small2.bz2', 'UCB_small2.bz2']
+names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian', 'UCB Tuned']
+
 colors = ['red', 'black', 'green', 'yellow']
 strats = []
 for file in files:

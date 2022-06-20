@@ -7,10 +7,11 @@ import dill
 import bz2
 import numpy as np
 
-
-files = ['ts_n100_T5000.bz2', 'rpm_n100_T5000.bz2', 'gbb_n100_T5000.bz2',
-        'UCB_n100_T5000.bz2', 'Exp3_n100_T5000.bz2']
-names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian', 'UCB', 'Exp3']
+# files = ['TS_many_arm.bz2', 'rpm_many_arm.bz2', 'gbb_many_arm.bz2', 'UCB_many_arm.bz2', ]
+files = ["TS_large_increment.bz2", 'rpm_large_increment.bz2', 'gbb_large_increment.bz2', 'UCB_large.bz2']
+# files = ["TS__increment.bz2", 'rpm_small_increment.bz2', 'gbb_small_increment.bz2', 'UCBft_small_increment.bz2']
+# files = ['TS_small2.bz2', 'rpm_small2.bz2', 'gbb_small2.bz2', 'UCB_small2.bz2']
+names = ['Thompson sampling', 'Randomised probability matching', 'Greedy Bayesian', 'UCB Tuned', 'Exp3']
 
 # files = ['Exp3_n100_T5000.bz2']
 # names = ['Exp3']
@@ -52,8 +53,8 @@ for n, strat in enumerate(strat_u_b):
     ax.set_xlabel("Horizon", fontsize=10)
     ax.set_ylabel("Cumulative regret", fontsize=10)
     ax.set_title(names[n], fontsize=10)
-    if n != 4:
-        ax.set_ylim(0, 120)
+    # if n != 4:
+    #     ax.set_ylim(0, 120)
 
 plt.tight_layout()
 plt.show()

@@ -11,7 +11,7 @@ import dill
 import bz2
 
 # initialise machines
-machines = [bernoulli_machine(i) for i in [0.01]*2+[0.02]]
+machines = [bernoulli_machine(i) for i in [0.2 + j * 0.05 for j in range(10)]]
 
 class ThompsonSamplingBernoulli(Game):
     """
@@ -65,5 +65,5 @@ class ThompsonSamplingBernoulli(Game):
 
 priors = [[1, 1] for i in range(len(machines))]
 TS_games = [ThompsonSamplingBernoulli(priors, 5000, *machines).simulate("obj") for i in range(100)]
-with bz2.BZ2File('TS_small_increment.bz2', 'wb') as handle:
+with bz2.BZ2File('TS_many_arm.bz2', 'wb') as handle:
     dill.dump(TS_games, handle)

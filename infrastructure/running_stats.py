@@ -29,7 +29,7 @@ class RunningStats:
         return self.new_m if self.n else 0.0
 
     def variance(self):
-        return self.new_s / (self.n - 1) if self.n > 1 else 0.0
+        return self.new_s / (self.n) if self.n > 1 else 0.0
 
     def standard_deviation(self):
         return math.sqrt(self.variance())
